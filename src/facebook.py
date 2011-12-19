@@ -150,6 +150,10 @@ class GraphAPI(object):
     def put_like(self, object_id):
         """Likes the given post."""
         return self.put_object(object_id, "likes")
+    
+    def delete_like(self, object_id):
+        """ UNlikes the given post. """
+        self.request(object_id + "/likes", post_args={"method": "delete"})
 
     def delete_object(self, id):
         """Deletes the object with the given ID from the graph."""
@@ -174,7 +178,8 @@ class GraphAPI(object):
             response = _parse_json(file.read())
         finally:
             file.close()
-        if response.get("error"):
+        
+        if type(response) == dict and response.get("error"):
             raise GraphAPIError(response["error"]["type"],
                                 response["error"]["message"])
         return response
